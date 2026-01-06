@@ -318,7 +318,8 @@
 		resets = <0x11 0x94>;
 		snps,dis_u2_susphy_quirk;
 		status = "okay";
-		phys = <0x15 0x16 0x04>;
+		// 修复点1：修正phys属性，仅保留usb2-phy和usb3-phy对应的phandle，与phy-names匹配
+		phys = <0x15 0x16>;
 		phy-names = "usb2-phy\0usb3-phy";
 		extcon = <0x17>;
 	};
@@ -330,7 +331,8 @@
 		clocks = <0x11 0xa9 0x11 0xaa 0x11 0xa8>;
 		clock-names = "ref_clk\0suspend_clk\0bus_clk";
 		dr_mode = "host";
-		phys = <0x18 0x12 0x04>;
+		// 修复点2：修正phys属性，仅保留usb2-phy和usb3-phy对应的phandle
+		phys = <0x18 0x12>;
 		phy-names = "usb2-phy\0usb3-phy";
 		phy_type = "utmi_wide";
 		power-domains = <0x13 0x0f>;
@@ -3124,10 +3126,7 @@
 			};
 		};
 
-		fixed-link {
-			speed = <0x3e8>;
-			full-duplex;
-		};
+		// 修复点3：删除重复的fixed-link节点（已在switch的port@7中定义）
 	};
 
 	crypto@fe380000 {
@@ -3137,7 +3136,8 @@
 		clocks = <0x11 0x6a 0x11 0x6b 0x11 0x6c 0x11 0x6d>;
 		clock-names = "aclk\0hclk\0sclk\0pka";
 		resets = <0x11 0x69 0x11 0x67 0x11 0x68 0x11 0x6b 0x11 0x6a>;
-		reset-names = "core\0a\0h\0rng,\0pka";
+		// 修复点4：修正reset-names中的非法逗号
+		reset-names = "core\0a\0h\0rng\0pka";
 		status = "okay";
 	};
 
@@ -3345,7 +3345,8 @@
 		regulator-always-on;
 		regulator-boot-on;
 		regulator-init-microvolt = <0xdbba0>;
-		regulator-min-microvolt = "\0\f5";
+		// 修复点5：修正regulator-min-microvolt的非法值，改为合法的十六进制数值
+		regulator-min-microvolt = <0x7a120>;
 		regulator-max-microvolt = <0x149970>;
 		regulator-ramp-delay = <0x1771>;
 		regulator-settling-time-up-us = <0xfa>;
